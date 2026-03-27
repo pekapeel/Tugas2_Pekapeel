@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Biodata Kelompok</title>
+    <style>
+        body { 
+            background-color: {{ config.primary_color }}; 
+            font-family: {{ config.font_family }}, sans-serif;
+            transition: 0.5s;
+        }
+        .container { max-width: 600px; margin: 50px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .admin-box { border: 2px dashed red; padding: 10px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Biodata Kelompok</h1>
+        <p><strong>Nama Anggota:</strong> Edlyn & Tim</p>
+        <p>Website ini bisa dilihat oleh siapa saja (Public).</p>
+
+        <hr>
+
+        {% if user.is_authenticated %}
+            <p>Halo, {{ user.email }}! <a href="/accounts/logout/">Logout</a></p>
+            
+            {% if is_member %}
+                <div class="admin-box">
+                    <h3>Panel Anggota (Authorization: Success)</h3>
+                    <form method="POST" action="{% url 'update_style' %}">
+                        {% csrf_token %}
+                        <label>Warna Background:</label>
+                        <input type="color" name="color" value="{{ config.primary_color }}">
+                        <br><br>
+                        <label>Font Style:</label>
+                        <select name="font">
+                            <option value="Arial">Arial</option>
+                            <option value="Courier New">Courier New</option>
+                            <option value="Georgia">Georgia</option>
+                        </select>
+                        <br><br>
+                        <button type="submit">Update Tampilan</button>
+                    </form>
+                </div>
+            {% else %}
+                <p style="color: orange;">Anda login, tapi bukan anggota kelompok. Anda tidak bisa edit.</p>
+            {% endif %}
+            
+        {% else %}
+            <p><a href="/accounts/google/login/">Login dengan Google untuk edit</a></p>
+        {% endif %}
+    </div>
+</body>
+</html>
