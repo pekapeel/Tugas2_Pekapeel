@@ -156,4 +156,5 @@ SOCIALACCOUNT_PROVIDERS = {
 
 ALLOWED_GROUP_MEMBERS = [
     'edlyn.marva@ui.ac.id',
+    'cathlin.abigail@ui.ac.id'
 ]
