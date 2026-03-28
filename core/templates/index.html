@@ -1,3 +1,4 @@
+{% load socialaccount %} 
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,10 +11,34 @@
         }
         .container { max-width: 600px; margin: 50px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .admin-box { border: 2px dashed red; padding: 10px; margin-top: 20px; }
+        .message-banner { 
+            position: fixed;
+            bottom: 0; 
+            left: 0;
+            width: 100%; 
+            padding: 15px; 
+            color: white; 
+            border-radius: 0; 
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.2); 
+            z-index: 9999;
+            text-align: center;
+            transition: opacity 0.5s ease;
+            box-sizing: border-radius;
+        }
+        .message-banner.success { background-color: #28a745; } 
+        .message-banner.info { background-color: #dc3545; }   
     </style>
 </head>
 <body>
     <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message-banner {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
         <h1>Biodata Kelompok</h1>
         <p><strong>Nama Anggota:</strong> Edlyn & Tim</p>
         <p>Website ini bisa dilihat oleh siapa saja (Public).</p>
@@ -22,6 +47,13 @@
 
         {% if user.is_authenticated %}
             <p>Halo, {{ user.email }}! <a href="/accounts/logout/">Logout</a></p>
+
+            <script>
+                // timer 10 menit (600000ms) sesuai SESSION_COOKIE_AGE di settings.py
+                setTimeout(function() {
+                    window.location.href = "{% url 'force_logout' %}";
+                }, 10000); 
+            </script>
             
             {% if is_member %}
                 <div class="admin-box">
@@ -46,8 +78,22 @@
             {% endif %}
             
         {% else %}
-            <p><a href="/accounts/google/login/">Login dengan Google untuk edit</a></p>
+            <a href="{% provider_login_url 'google' process='login' %}">Login dengan Google untuk edit</a>
         {% endif %}
     </div>
-</body>
+    
+    <script>
+        // menghilangkan toast secara otomatis setelah 3 detik
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const banners = document.querySelectorAll('.message-banner');
+            banners.forEach(banner => {
+                setTimeout(() => {
+                    banner.style.opacity = '0';
+                    setTimeout(() => banner.remove(), 500);
+                }, 3000);
+            });
+        });
+    </script>
+
+
 </html>

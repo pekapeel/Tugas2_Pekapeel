@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,14 +24,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-pbimx9nvii*m!-dbd+)vnr8ae^n0b@swx4veqneobp=0sj#h7u'
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# tentukan berapa lama session berlaku (dalam detik)
+SESSION_COOKIE_AGE = 10    # 10 menit
+
+# agar session langsung hangus kalau browser ditutup
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# update expiration setiap kali user beraktivitas (biar gak logout pas lagi ngetik)
+SESSION_SAVE_EVERY_REQUEST = True
 
 # Application definition
 
@@ -150,9 +160,20 @@ SOCIALACCOUNT_PROVIDERS = {
         ],
         'AUTH_PARAMS': {
             'access_type': 'online',
+        },
+        # ini kita ambil dari .env -> ensure single source of truth
+        'APP': {
+            'client_id': os.getenv('GOOGLE_CLIENT_ID'),
+            'secret': os.getenv('GOOGLE_CLIENT_SECRET'),
+            'key': ''
         }
     }
 }
+
+# mengaktifkan filter XSS bawaan browser
+SECURE_BROWSER_XSS_FILTER = True
+# mencegah web kamu dibuka di dalam frame/iframe web lain (clickjacking)
+X_FRAME_OPTIONS = 'DENY'
 
 ALLOWED_GROUP_MEMBERS = [
     'edlyn.marva@ui.ac.id',

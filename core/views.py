@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.conf import settings
 from .models import WebsiteConfig
+from django.contrib.auth import logout
+from django.contrib import messages
 
 def home(request):
     # Ambil konfigurasi tampilan pertama (atau buat jika belum ada)
@@ -27,4 +29,24 @@ def update_style(request):
             config.font_family = request.POST.get('font')
             config.save()
             
+    return redirect('home')
+
+# validasi input saat ganti warna atau font
+def update_style(request):
+    if request.method == 'POST' and request.user.is_authenticated:
+        if request.user.email in settings.ALLOWED_GROUP_MEMBERS:
+            allowed_fonts = ['Arial', 'Courier New', 'Georgia']
+            selected_font = request.POST.get('font')
+
+            if selected_font in allowed_fonts:
+                config = WebsiteConfig.objects.get(id=1)
+                config.primary_color = request.POST.get('color')
+                config.font_family = selected_font
+                config.save()
+    return redirect('home')
+
+# logout karena session
+def force_logout(request):
+    logout(request)
+    messages.info(request, "You have signed out because the session is out")
     return redirect('home')
