@@ -74,7 +74,7 @@ ROOT_URLCONF = 'website_pkapls.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -87,7 +87,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'website_pkapls.wsgi.application'
-
+SOCIALACCOUNT_LOGIN_ON_GET = True
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -177,5 +177,9 @@ X_FRAME_OPTIONS = 'DENY'
 
 ALLOWED_GROUP_MEMBERS = [
     'edlyn.marva@ui.ac.id',
-    'cathlin.abigail@ui.ac.id'
+    'cathlin.abigail@ui.ac.id',
+    'rayna.balqis@ui.ac.id',
+    'edlynmarva09@gmail.com',
+    'raynabalq.s@gmail.com',
+    'msy.aulya@ui.ac.id',
 ]

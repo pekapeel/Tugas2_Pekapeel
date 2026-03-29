@@ -1,99 +1,512 @@
 {% load socialaccount %} 
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biodata Kelompok</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        body { 
-            background-color: {{ config.primary_color }}; 
-            font-family: {{ config.font_family }}, sans-serif;
-            transition: 0.5s;
+        :root {
+            --bg:       {{ config.primary_color }};
+            --font:     '{{ config.font_family }}', 'DM Serif Display', serif;
+            --card:     rgba(255,255,255,0.08);
+            --border:   rgba(255,255,255,0.14);
+            --text:     #f0ede6;
+            --muted:    rgba(240,237,230,0.55);
+            --accent:   #e8c47a;
+            --accent2:  #c47a6e;
+            --radius:   18px;
         }
-        .container { max-width: 600px; margin: 50px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .admin-box { border: 2px dashed red; padding: 10px; margin-top: 20px; }
-        .message-banner { 
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            background-color: var(--bg);
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text);
+            overflow-x: hidden;
+            transition: background-color 0.6s ease, font-family 0.3s;
+        }
+
+        body::before {
+            content: '';
             position: fixed;
-            bottom: 0; 
-            left: 0;
-            width: 100%; 
-            padding: 15px; 
-            color: white; 
-            border-radius: 0; 
-            box-shadow: 0 -4px 12px rgba(0,0,0,0.2); 
-            z-index: 9999;
-            text-align: center;
-            transition: opacity 0.5s ease;
-            box-sizing: border-radius;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 10%, rgba(232,196,122,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 80% at 85% 80%, rgba(196,122,110,0.10) 0%, transparent 55%),
+                radial-gradient(ellipse 100% 100% at 50% 50%, rgba(0,0,0,0.35) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
         }
-        .message-banner.success { background-color: #28a745; } 
-        .message-banner.info { background-color: #dc3545; }   
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.5;
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: auto 1fr auto;
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 0 24px 60px;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 28px 0 24px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 56px;
+            animation: fadeDown 0.7s ease both;
+        }
+
+        .nav-brand {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+            opacity: 0.9;
+        }
+
+        .nav-auth {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .nav-user {
+            font-size: 0.8rem;
+            color: var(--muted);
+            letter-spacing: 0.03em;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 20px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.25s ease;
+        }
+
+        .btn-accent {
+            background: var(--accent);
+            color: #1a1209;
+            font-weight: 600;
+        }
+        .btn-accent:hover { opacity: 0.88; transform: translateY(-1px); }
+
+        .btn-logout {
+            background: rgba(255,255,255,0.07);
+            color: var(--muted);
+            border: 1px solid var(--border);
+        }
+        .btn-logout:hover { background: rgba(255,255,255,0.12); color: var(--text); }
+
+        .hero { animation: fadeUp 0.85s ease 0.1s both; }
+
+        .hero-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .eyebrow-text {
+            font-size: 0.75rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .hero-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.8rem, 8vw, 5.2rem);
+            line-height: 1.07;
+            letter-spacing: -0.01em;
+            margin-bottom: 18px;
+        }
+
+        .hero-title em { font-style: italic; color: var(--accent); }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            color: var(--muted);
+            max-width: 440px;
+            line-height: 1.65;
+            margin-bottom: 48px;
+        }
+
+        .members-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 16px;
+        }
+
+        .member-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 14px;
+            margin-bottom: 56px;
+            animation: fadeUp 0.9s ease 0.25s both;
+        }
+
+        .member-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 22px 20px;
+            backdrop-filter: blur(12px);
+            transition: transform 0.25s ease, border-color 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .member-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .member-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.25); }
+        .member-card:hover::before { opacity: 1; }
+
+        .member-avatar {
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.1rem;
+            color: #1a1209;
+            margin-bottom: 14px;
+        }
+        .member-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+        }
+
+        .member-role { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.04em; }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 0 0 40px;
+            animation: fadeUp 1s ease 0.35s both;
+        }
+        .divider-line { flex: 1; height: 1px; background: var(--border); }
+        .divider-text { font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+
+        .auth-section { animation: fadeUp 1s ease 0.4s both; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            letter-spacing: 0.04em;
+        }
+
+        .status-badge.public {
+            background: rgba(232,196,122,0.12);
+            border: 1px solid rgba(232,196,122,0.3);
+            color: var(--accent);
+        }
+
+        .status-badge.member {
+            background: rgba(100,200,120,0.12);
+            border: 1px solid rgba(100,200,120,0.3);
+            color: #7de0a0;
+        }
+
+        .status-badge.viewer {
+            background: rgba(240,170,80,0.10);
+            border: 1px solid rgba(240,170,80,0.25);
+            color: #f0aa50;
+        }
+
+        .login-prompt {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .login-desc { font-size: 0.85rem; color: var(--muted); }
+
+        .panel {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+            backdrop-filter: blur(16px);
+            margin-top: 20px;
+        }
+
+        .panel-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.3rem;
+            margin-bottom: 6px;
+        }
+
+        .panel-sub { font-size: 0.8rem; color: var(--muted); margin-bottom: 28px; }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
+
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+
+        .form-label {
+            font-size: 0.72rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .color-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(0,0,0,0.25);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 14px;
+            transition: border-color 0.2s;
+        }
+        .color-wrapper:hover { border-color: rgba(255,255,255,0.3); }
+
+        input[type="color"] {
+            width: 32px; height: 32px;
+            border: none; outline: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: none;
+            padding: 0;
+        }
+
+        .color-hex {
+            font-size: 0.8rem;
+            color: var(--muted);
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.05em;
+        }
+
+        select {
+            appearance: none;
+            width: 100%;
+            background: rgba(0,0,0,0.25);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: var(--text);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.4)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+        }
+        select:hover { border-color: rgba(255,255,255,0.3); }
+        select option { background: #2a2020; }
+
+        .btn-submit {
+            width: 100%;
+            justify-content: center;
+            padding: 13px 24px;
+            background: var(--accent);
+            color: #1a1209;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+        }
+        .btn-submit:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,196,122,0.25); }
+        .btn-submit:active { transform: translateY(0); }
+
+        .viewer-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: rgba(240,170,80,0.07);
+            border: 1px solid rgba(240,170,80,0.2);
+            border-radius: 12px;
+            padding: 16px 18px;
+            margin-top: 20px;
+        }
+        .viewer-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+        .viewer-text { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
+        .viewer-text strong { color: #f0aa50; font-weight: 500; }
+
+        .footer {
+            margin-top: auto;
+            padding-top: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-top: 1px solid var(--border);
+            animation: fadeUp 1s ease 0.5s both;
+        }
+
+        .footer-text { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.04em; }
+        .footer-dot { color: var(--accent); margin: 0 6px; }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.6; transform: scale(0.85); }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="message-banner {{ message.tags }}">
-                    {{ message }}
+    <div class="page">
+
+        <nav class="nav">
+            <span class="nav-brand">Kelompok &middot; Project</span>
+            <div class="nav-auth">
+                {% if user.is_authenticated %}
+                    <span class="nav-user">{{ user.email }}</span>
+                    <a href="/accounts/logout/" class="btn btn-logout">Keluar</a>
+                {% else %}
+                    <a href="/accounts/google/login/" class="btn btn-accent">Masuk dengan Google</a>
+                {% endif %}
+            </div>
+        </nav>
+
+        <main>
+            <div class="hero">
+                <div class="hero-eyebrow">
+                    <span class="eyebrow-text">Profil Kelompok &mdash; Publik</span>
                 </div>
-            {% endfor %}
-        {% endif %}
+                <h1 class="hero-title">Biodata<br><em>Kelompok</em></h1>
+                <p class="hero-subtitle">
+                    Halaman ini dapat diakses oleh siapa saja.
+                    Hanya anggota kelompok yang dapat mengubah tampilan website ini.
+                </p>
+            </div>
 
-        <h1>Biodata Kelompok</h1>
-        <p><strong>Nama Anggota:</strong> Edlyn & Tim</p>
-        <p>Website ini bisa dilihat oleh siapa saja (Public).</p>
-
-        <hr>
-
-        {% if user.is_authenticated %}
-            <p>Halo, {{ user.email }}! <a href="/accounts/logout/">Logout</a></p>
-
-            <script>
-                // timer 10 menit (600000ms) sesuai SESSION_COOKIE_AGE di settings.py
-                setTimeout(function() {
-                    window.location.href = "{% url 'force_logout' %}";
-                }, 10000); 
-            </script>
-            
-            {% if is_member %}
-                <div class="admin-box">
-                    <h3>Panel Anggota (Authorization: Success)</h3>
-                    <form method="POST" action="{% url 'update_style' %}">
-                        {% csrf_token %}
-                        <label>Warna Background:</label>
-                        <input type="color" name="color" value="{{ config.primary_color }}">
-                        <br><br>
-                        <label>Font Style:</label>
-                        <select name="font">
-                            <option value="Arial">Arial</option>
-                            <option value="Courier New">Courier New</option>
-                            <option value="Georgia">Georgia</option>
-                        </select>
-                        <br><br>
-                        <button type="submit">Update Tampilan</button>
-                    </form>
+            <p class="members-label">Anggota Kelompok</p>
+            <div class="member-grid">
+                <div class="member-card">
+                    <div class="member-avatar">E</div>
+                    <div class="member-name">Edlyn</div>
+                    <div class="member-role">Anggota &mdash; UI '22</div>
                 </div>
-            {% else %}
-                <p style="color: orange;">Anda login, tapi bukan anggota kelompok. Anda tidak bisa edit.</p>
-            {% endif %}
-            
-        {% else %}
-            <a href="{% provider_login_url 'google' process='login' %}">Login dengan Google untuk edit</a>
-        {% endif %}
-    </div>
-    
-    <script>
-        // menghilangkan toast secara otomatis setelah 3 detik
-        window.addEventListener('DOMContentLoaded', (event) => {
-            const banners = document.querySelectorAll('.message-banner');
-            banners.forEach(banner => {
-                setTimeout(() => {
-                    banner.style.opacity = '0';
-                    setTimeout(() => banner.remove(), 500);
-                }, 3000);
-            });
-        });
-    </script>
+                <div class="member-card">
+                    <div class="member-avatar">T</div>
+                    <div class="member-name">Tim</div>
+                    <div class="member-role">Anggota &mdash; UI '22</div>
+                </div>
+            </div>
 
+            <div class="divider">
+                <div class="divider-line"></div>
+                <span class="divider-text">Akun & Akses</span>
+                <div class="divider-line"></div>
+            </div>
 
-</html>
+            <div class="auth-section">
+                {% if user.is_authenticated %}
+                    {% if is_member %}
+                        <span class="status-badge member"><span class="status-dot"></span>Anggota Terverifikasi</span>
+                        <div class="panel">
+                            <div class="panel-title">Panel Pengaturan Tampilan</div>
+                            <div class="panel-sub">Kamu punya akses penuh untuk mengubah tampilan website ini.</div>
+                            <form method="POST" action="{% url 'update_style' %}">
+                                {% csrf_token %}
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Warna Background</label>
+                                        <div class="color-wrapper">
+                                            <input type="color" name="color" value="{{ config.primary_color }}"
+                                                   oninput="this.nextElementSibling.textContent = this.value">
+                                            <span class="color-hex">{{ config.primary_color }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Font Style</label>
+                                        <select name="font">
+                                            <option value="Arial" {% if config.font_family == 'Arial' %}selected{% endif %}>Arial</option>
+                                            <option value="Courier New" {% if config.font_family == 'Courier New' %}selected{% endif %}>Courier New</option>
+                                            <option value="Georgia" {% if config.font_family == 'Georgia' %}selected{% endif %}>Georgia</option>
+                                            <option value="DM Serif Display" {% if config.font_family == 'DM Serif Display' %}selected{% endif %}>DM Serif Display</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn-submit">Simpan Tampilan</button>
+                            </form>
+                        </div>
+                    {% else %}
+                        <span class="status-badge viewer"><span class="status-dot"></span>Bukan Anggota</span>
+                        <div class="viewer-note">
+                            <span class="viewer-icon">Locked</span>
+                            <div class="viewer-text">
+                                Kamu sudah login sebagai <strong>{{ user.email }}</strong>,
+                                tapi akunmu tidak terdaftar sebagai anggota kelompok.
+                                Kamu tidak dapat mengubah tampilan website ini.
+                            </div>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <span class="status-badge public"><span class="status-dot"></span>Mode Publik</span>
+                    <div class="login-prompt">
+                        <span class="login-desc">Login sebagai anggota kelompok untuk mengubah tampilan.</span>
+                        <a href="/accounts/google/login/" class="btn btn-accent">Masuk dengan Google</a>
+                    </div>
+                {% endif %}
+            </div>
