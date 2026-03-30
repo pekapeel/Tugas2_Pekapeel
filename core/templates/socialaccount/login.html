@@ -6,14 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login &mdash; Biodata Kelompok</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #1a1209;
-            --card: rgba(255,255,255,0.07);
+            --bg:     #1a1209;
+            --card:   rgba(255,255,255,0.07);
             --border: rgba(255,255,255,0.13);
-            --text: #f0ede6;
-            --muted: rgba(240,237,230,0.5);
+            --text:   #f0ede6;
+            --muted:  rgba(240,237,230,0.52);
             --accent: #e8c47a;
         }
 
@@ -21,7 +21,7 @@
 
         body {
             min-height: 100vh;
-            background-color: var(--bg);
+            background: var(--bg);
             font-family: 'DM Sans', sans-serif;
             color: var(--text);
             display: flex;
@@ -35,9 +35,8 @@
             position: fixed;
             inset: 0;
             background:
-                radial-gradient(ellipse 70% 60% at 15% 15%, rgba(232,196,122,0.11) 0%, transparent 60%),
-                radial-gradient(ellipse 60% 70% at 85% 85%, rgba(196,122,110,0.09) 0%, transparent 55%),
-                radial-gradient(ellipse 100% 100% at 50% 50%, rgba(0,0,0,0.3) 0%, transparent 100%);
+                radial-gradient(ellipse 70% 60% at 15% 15%, rgba(232,196,122,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 70% at 85% 85%, rgba(196,122,110,0.09) 0%, transparent 55%);
             pointer-events: none;
         }
 
@@ -59,14 +58,14 @@
             padding: 52px 44px;
             max-width: 420px;
             width: 100%;
-            backdrop-filter: blur(16px);
+            backdrop-filter: blur(18px);
             text-align: center;
             animation: fadeUp 0.7s ease both;
         }
 
         .brand {
             font-family: 'DM Serif Display', serif;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             letter-spacing: 0.18em;
             text-transform: uppercase;
             color: var(--accent);
@@ -75,28 +74,28 @@
         }
 
         .icon-wrap {
-            width: 64px; height: 64px;
+            width: 68px; height: 68px;
             border-radius: 50%;
-            background: rgba(232,196,122,0.12);
-            border: 1px solid rgba(232,196,122,0.25);
+            background: rgba(232,196,122,0.11);
+            border: 1px solid rgba(232,196,122,0.24);
             display: flex; align-items: center; justify-content: center;
             margin: 0 auto 24px;
-            font-size: 1.6rem;
+            font-size: 1.8rem;
         }
 
         h1 {
             font-family: 'DM Serif Display', serif;
-            font-size: 2rem;
-            line-height: 1.15;
-            margin-bottom: 10px;
+            font-size: 2.1rem;
+            line-height: 1.12;
+            margin-bottom: 12px;
         }
 
         h1 em { font-style: italic; color: var(--accent); }
 
         .desc {
-            font-size: 0.85rem;
+            font-size: 0.84rem;
             color: var(--muted);
-            line-height: 1.65;
+            line-height: 1.7;
             margin-bottom: 36px;
             max-width: 280px;
             margin-left: auto;
@@ -105,42 +104,54 @@
 
         .divider {
             display: flex; align-items: center; gap: 12px;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
         .divider-line { flex: 1; height: 1px; background: var(--border); }
-        .divider-text { font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+        .divider-text { font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
 
-        form { width: 100%; }
-
+        /* Google button */
         .btn-google {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
             width: 100%;
-            padding: 14px 24px;
+            padding: 15px 24px;
             background: var(--accent);
             color: #1a1209;
             font-family: 'DM Sans', sans-serif;
             font-size: 0.88rem;
-            font-weight: 600;
-            letter-spacing: 0.05em;
+            font-weight: 700;
+            letter-spacing: 0.06em;
             border: none;
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.25s ease;
             text-transform: uppercase;
+            text-decoration: none;
         }
-        .btn-google:hover { opacity: 0.88; transform: translateY(-2px); box-shadow: 0 10px 28px rgba(232,196,122,0.2); }
+        .btn-google:hover { opacity: 0.88; transform: translateY(-2px); box-shadow: 0 10px 28px rgba(232,196,122,0.22); }
         .btn-google:active { transform: translateY(0); }
 
-        .google-icon {
-            width: 18px; height: 18px; flex-shrink: 0;
+        .google-icon { width: 18px; height: 18px; flex-shrink: 0; }
+
+        /* Security note */
+        .security-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 18px;
+            font-size: 0.72rem;
+            color: var(--muted);
+            opacity: 0.7;
         }
+
+        .security-note svg { flex-shrink: 0; }
 
         .back-link {
             display: inline-block;
-            margin-top: 24px;
+            margin-top: 22px;
             font-size: 0.78rem;
             color: var(--muted);
             text-decoration: none;
@@ -148,14 +159,15 @@
             transition: color 0.2s;
         }
         .back-link:hover { color: var(--text); }
-        .back-link::before { content: '← '; }
 
         .note {
             margin-top: 28px;
-            font-size: 0.72rem;
+            padding-top: 22px;
+            border-top: 1px solid var(--border);
+            font-size: 0.71rem;
             color: var(--muted);
             line-height: 1.6;
-            opacity: 0.7;
+            opacity: 0.75;
         }
 
         @keyframes fadeUp {
@@ -192,8 +204,7 @@
                 <input type="hidden" name="next" value="{{ next }}">
             {% endif %}
             <button type="submit" class="btn-google">
-                <!-- Google Icon SVG -->
-                <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="google-icon" viewBox="0 0 24 24">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                     <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
                     <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
@@ -203,7 +214,14 @@
             </button>
         </form>
 
-        <a href="/" class="back-link">Kembali ke beranda</a>
+        <div class="security-note">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            Autentikasi aman via OAuth 2.0
+        </div>
+
+        <a href="/" class="back-link">← Kembali ke beranda</a>
 
         <p class="note">Hanya anggota kelompok yang terdaftar yang dapat mengubah tampilan website.</p>
     </div>

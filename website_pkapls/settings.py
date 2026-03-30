@@ -182,6 +182,6 @@ ALLOWED_GROUP_MEMBERS = [
     'edlynmarva09@gmail.com',
     'raynabalq.s@gmail.com',
     'msy.aulya@ui.ac.id',
-    'aisyah.saajidah@ui.ac.id'
-    'saajidahaisyah@gmail.com'
+    'aisyah.saajidah@ui.ac.id',
+    'saajidahaisyah@gmail.com',
 ]
