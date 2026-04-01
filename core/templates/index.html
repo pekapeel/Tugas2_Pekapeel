@@ -696,11 +696,30 @@
 
     // Script timer logout
     {% if user.is_authenticated %}
+    (function() {
         const logoutUrl = "{% url 'force_logout' %}";
-        setTimeout(function() {
-            window.location.href = logoutUrl;
-        }, 10000); 
+        const idleTime = 10000; 
+        let timeout;
+
+        function logout() {
+        window.location.href = logoutUrl;
+        }
+
+        function resetTimer() {
+            clearTimeout(timeout);
+            timeout = setTimeout(logout, idleTime);
+        }
+
+        // Event yang dianggap interaksi agar timer direset
+        const events = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart', 'click'];
+        events.forEach(function(name) {
+            document.addEventListener(name, resetTimer, true);
+        });
+
+        resetTimer();
+    })();
     {% endif %}
+
 </script>
 
 <script>

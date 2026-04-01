@@ -25,7 +25,11 @@ def update_style(request):
     # SECURITY CHECK: Hanya izinkan POST dan Anggota Kelompok
     if request.method == 'POST' and request.user.is_authenticated:
         if request.user.email in settings.ALLOWED_GROUP_MEMBERS:
-            allowed_fonts = ['Arial', 'Courier New', 'Georgia']
+            allowed_fonts = [
+                'Arial', 'Courier New', 'Georgia', 'DM Sans', 
+                'DM Serif Display', 'Lora', 'Playfair Display', 
+                'Space Mono', 'Fraunces'
+            ]
             selected_font = request.POST.get('font')
 
             if selected_font in allowed_fonts:
