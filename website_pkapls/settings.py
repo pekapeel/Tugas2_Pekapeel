@@ -30,7 +30,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 # tentukan berapa lama session berlaku (dalam detik)
-SESSION_COOKIE_AGE = 10    # 10 menit
+SESSION_COOKIE_AGE = 10    # 10 detik
 
 # agar session langsung hangus kalau browser ditutup
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True

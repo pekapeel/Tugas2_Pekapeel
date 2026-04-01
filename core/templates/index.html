@@ -667,6 +667,16 @@
         document.documentElement.style.setProperty('--body-font', resolved);
         document.documentElement.style.setProperty('--display-font', resolved); 
     }
+
+    {% if user.is_authenticated %}
+        // Timer 10 detik untuk demonstrasi (10000ms)
+        setTimeout(function() {
+            // Kita arahkan ke fungsi force_logout biar dapet pesan "Session is out"
+            window.location.href = "{% url 'force_logout' %}";
+        }, 10000); 
+    {% endif %}
+
 </script>
+
 </body>
 </html>

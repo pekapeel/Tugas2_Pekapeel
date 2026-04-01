@@ -20,19 +20,9 @@ def home(request):
     }
     return render(request, 'index.html', context)
 
-def update_style(request):
-    # SECURITY CHECK: Hanya izinkan POST dan Anggota Kelompok
-    if request.method == 'POST' and request.user.is_authenticated:
-        if request.user.email in settings.ALLOWED_GROUP_MEMBERS:
-            config = WebsiteConfig.objects.get(id=1)
-            config.primary_color = request.POST.get('color')
-            config.font_family = request.POST.get('font')
-            config.save()
-            
-    return redirect('home')
-
 # validasi input saat ganti warna atau font
 def update_style(request):
+    # SECURITY CHECK: Hanya izinkan POST dan Anggota Kelompok
     if request.method == 'POST' and request.user.is_authenticated:
         if request.user.email in settings.ALLOWED_GROUP_MEMBERS:
             allowed_fonts = ['Arial', 'Courier New', 'Georgia']
