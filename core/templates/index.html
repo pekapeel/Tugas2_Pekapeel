@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Mono:ital@0;1&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg:      {{ config.primary_color|default:'#1a1209' }};
+            --bg:      {{ config.primary_color|default:'#0A0A0A' }};
             --card:    rgba(255,255,255,0.07);
             --border:  rgba(255,255,255,0.13);
             --text:    #f0ede6;
@@ -468,6 +468,33 @@
             0%, 100% { opacity: 1; transform: scale(1); }
             50%       { opacity: 0.55; transform: scale(0.8); }
         }
+
+        /* toast */
+        .toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 9999;
+        }
+
+        .toast {
+            background: var(--accent); /* Warna emas sesuai tema kamu */
+            color: #1a1209;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(120%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -645,6 +672,37 @@
 
 </div>
 
+<div class="toast-container" id="toastContainer">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="toast">
+                <span>🔔</span>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+<script>
+    // Menghilangkan toast otomatis setelah 5 detik
+    const toast = document.querySelector('.toast');
+    if (toast) {
+        setTimeout(() => {
+            toast.style.transition = "opacity 0.5s ease";
+            toast.style.opacity = "0";
+            setTimeout(() => toast.remove(), 500);
+        }, 5000);
+    }
+
+    // Script timer logout
+    {% if user.is_authenticated %}
+        const logoutUrl = "{% url 'force_logout' %}";
+        setTimeout(function() {
+            window.location.href = logoutUrl;
+        }, 10000); 
+    {% endif %}
+</script>
+
 <script>
     // Map font name → Google Fonts family string
     const fontMap = {
@@ -667,15 +725,6 @@
         document.documentElement.style.setProperty('--body-font', resolved);
         document.documentElement.style.setProperty('--display-font', resolved); 
     }
-
-    {% if user.is_authenticated %}
-        // Timer 10 detik untuk demonstrasi (10000ms)
-        setTimeout(function() {
-            // Kita arahkan ke fungsi force_logout biar dapet pesan "Session is out"
-            window.location.href = "{% url 'force_logout' %}";
-        }, 10000); 
-    {% endif %}
-
 </script>
 
 </body>
