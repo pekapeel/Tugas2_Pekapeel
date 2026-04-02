@@ -22,7 +22,7 @@ def home(request):
 
 # validasi input saat ganti warna atau font
 def update_style(request):
-    # SECURITY CHECK: Hanya izinkan POST dan Anggota Kelompok
+    # Hanya mengizinkan POST dan anggota kelompok
     if request.method == 'POST' and request.user.is_authenticated:
         if request.user.email in settings.ALLOWED_GROUP_MEMBERS:
             allowed_fonts = [
